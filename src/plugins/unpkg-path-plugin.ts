@@ -32,8 +32,8 @@ export const unpkgPathPlugin = () => {
                         loader: 'jsx',
                         // tiny-test-pkg, mediumn-test-pkg, nested-tested-pkg
                         contents: `
-              const message = require('nested-test-pkg');
-              console.log(message);
+              import React from 'react';
+              console.log(react);
             `,
                     };
                 } else {
