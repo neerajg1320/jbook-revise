@@ -1,6 +1,7 @@
 import * as esbuild from 'esbuild-wasm';
 import React, {useEffect, useState, useRef} from "react";
 import { createRoot } from "react-dom/client";
+import {unpkgPathPlugin} from "./plugins/unpkg-path-plugin";
 
 const App = () => {
     const serviceRef = useRef<any>();
@@ -24,21 +25,27 @@ const App = () => {
             return;
         }
 
-        if (!input) {
-            return;
-        }
-
+        // Disabled when we switched over to build instead of transform
+        //
         // console.log(serviceRef.current);
-        const result = await serviceRef.current.transform(input, {
-            loader: 'jsx',
-            target: 'es2015'
-        });
+        // const result = await serviceRef.current.transform(input, {
+        //     loader: 'jsx',
+        //     target: 'es2015'
+        // });
 
-        // console.log(`result:`, result);
-        setCode(result.code);
+        // The build call using esbuild which creates a bundle
+        const result = await serviceRef.current.build({
+            entryPoints: ['index.js'],
+            bundle: true,
+            write: false,
+            plugins: [unpkgPathPlugin()]
+        })
+
+        console.log(`result:`, result);
+        setCode(result.outputFiles[0].text);
     }
 
-    const fontSize = "20px";
+    const fontSize = "1.2em";
 
     return (
         <div>
