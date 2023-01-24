@@ -1,12 +1,41 @@
-import React, {useState} from "react";
+import * as esbuild from 'esbuild-wasm';
+import React, {useEffect, useState, useRef} from "react";
 import { createRoot } from "react-dom/client";
 
 const App = () => {
+    const serviceRef = useRef<any>();
     const [input, setInput] = useState('');
     const [code, setCode] = useState('');
 
-    const onSubmit = () => {
+    const startService = async () => {
+        serviceRef.current =  await esbuild.startService({
+            worker: true,
+            wasmURL: '/esbuild.wasm' // picks esbuild.wasm placed in public folder
+        });
+    };
+
+    useEffect(() => {
+        startService()
+    }, []);
+
+    const onSubmit = async () => {
         // console.log(input);
+        if (!serviceRef.current) {
+            return;
+        }
+
+        if (!input) {
+            return;
+        }
+
+        // console.log(serviceRef.current);
+        const result = await serviceRef.current.transform(input, {
+            loader: 'jsx',
+            target: 'es2015'
+        });
+
+        // console.log(`result:`, result);
+        setCode(result.code);
     }
 
     return (
@@ -14,6 +43,8 @@ const App = () => {
             <textarea
                 value={input}
                 onChange={e => setInput(e.target.value)}
+                cols={80}
+                rows={10}
             />
             <div>
                 <button onClick={onSubmit}>Submit</button>
