@@ -38,6 +38,8 @@ const App = () => {
         setCode(result.code);
     }
 
+    const fontSize = "20px";
+
     return (
         <div>
             <textarea
@@ -45,12 +47,18 @@ const App = () => {
                 onChange={e => setInput(e.target.value)}
                 cols={80}
                 rows={10}
+                style={{fontSize}}
             />
             <div>
-                <button onClick={onSubmit}>Submit</button>
+                <button
+                    onClick={onSubmit}
+                    style={{fontSize}}
+                >
+                    Submit
+                </button>
             </div>
 
-            <pre>{code}</pre>
+            <pre style={{fontSize}}>{code}</pre>
         </div>
     );
 }
