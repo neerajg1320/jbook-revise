@@ -31,5 +31,7 @@ npm view react dist.tarball
 
 # Test with package https://unpkg.com/tiny-test-pkg@1.0.0/index.js
 
+# We will add axios to fetch the file from unpkg
+npm install axios
 
 
