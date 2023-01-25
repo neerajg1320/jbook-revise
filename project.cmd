@@ -179,3 +179,7 @@ npm install  monaco-editor --legacy-peer-deps
 # Add npm package prettier to our editor to add code formatter
 npm install prettier @types/prettier --legacy-peer-deps
 
+## Add styling in our project. we will use bulma
+npm install bulmaswatch --legacy-peer-deps
+In index.tsx add:
+import 'bulmaswatch/superhero/bulmaswatch.min.css';
