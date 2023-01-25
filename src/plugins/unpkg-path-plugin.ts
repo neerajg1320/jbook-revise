@@ -25,7 +25,7 @@ if (cacheEnabled) {
 }
 
 
-export const unpkgPathPlugin = () => {
+export const unpkgPathPlugin = (inputCode: string) => {
     return {
         name: 'unpkg-path-plugin',
         setup(build: esbuild.PluginBuild) {
@@ -61,10 +61,7 @@ export const unpkgPathPlugin = () => {
                         loader: 'jsx',
                         // tiny-test-pkg, medium-test-pkg, nested-tested-pkg
                         // using react-select loads more than 50 dependencies
-                        contents: `
-              import React, {useState} from 'react';
-              console.log(react, useState);
-            `,
+                        contents: inputCode,
                     };
                 }
 

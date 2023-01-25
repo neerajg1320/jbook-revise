@@ -7,7 +7,7 @@ const App = () => {
     const serviceRef = useRef<any>();
     const [input, setInput] = useState('');
     const [code, setCode] = useState('');
-    const debug = false;
+    const debug = true;
 
     const startService = async () => {
         serviceRef.current =  await esbuild.startService({
@@ -21,7 +21,7 @@ const App = () => {
     }, []);
 
     const onSubmit = async () => {
-        // console.log(input);
+        console.log(input);
         if (!serviceRef.current) {
             return;
         }
@@ -39,7 +39,8 @@ const App = () => {
             entryPoints: ['index.js'],
             bundle: true,
             write: false,
-            plugins: [unpkgPathPlugin()],
+            // TBVE: Check if we can create an inmemory file and pass path to it
+            plugins: [unpkgPathPlugin(input)],
             define: {
                 'process.env.NODE_ENV': '"production"',
                 global: 'window'
@@ -47,7 +48,7 @@ const App = () => {
         })
 
         if (debug) {
-            console.log(`result:`, result);
+            console.log(`result:`, result.outputFiles[0].text);
         }
 
         setCode(result.outputFiles[0].text);
