@@ -25,6 +25,24 @@ export const fetchPlugin = (inputCode: string) => {
     return {
         name: 'fetch-plugin',
         setup(build: esbuild.PluginBuild) {
+            build.onLoad({filter: /.*/}, async (args: any) => {
+                if (debugPlugin) {
+                    console.log('onLoad', args);
+                }
+
+                // If we have already fetched this file then return from cache
+                // We use args.path as key in the cache
+                if (cacheEnabled) {
+                    const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
+                    if (cachedResult) {
+                        if (debugCache) {
+                            console.log(`loaded ${args.path} from cache`);
+                        }
+                        return cachedResult;
+                    }
+                }
+            });
+
             build.onLoad({filter: /^index\.js[x]?$/}, async (args: any) => {
                 if (debugPlugin) {
                     console.log('onLoad', args);
@@ -42,17 +60,7 @@ export const fetchPlugin = (inputCode: string) => {
                     console.log('onLoad', args);
                 }
 
-                // If we have already fetched this file then return from cache
-                // We use args.path as key in the cache
-                if (cacheEnabled) {
-                    const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
-                    if (cachedResult) {
-                        if (debugCache) {
-                            console.log(`loaded ${args.path} from cache`);
-                        }
-                        return cachedResult;
-                    }
-                }
+
 
                 // Fetch the package from repo
                 const {data, request} = await axios.get(args.path);
@@ -91,18 +99,6 @@ export const fetchPlugin = (inputCode: string) => {
             build.onLoad({ filter: /.*/ }, async (args: any) => {
                 if (debugPlugin) {
                     console.log('onLoad', args);
-                }
-
-                // If we have already fetched this file then return from cache
-                // We use args.path as key in the cache
-                if (cacheEnabled) {
-                    const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
-                    if (cachedResult) {
-                        if (debugCache) {
-                            console.log(`loaded ${args.path} from cache`);
-                        }
-                        return cachedResult;
-                    }
                 }
 
                 // Fetch the package from repo

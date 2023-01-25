@@ -23,9 +23,14 @@ const defaultCssCode = `\
 import 'bulma/css/bulma.css';
 `
 
+const defaultJsCssCode = `\
+import pkg from 'tiny-test-pkg';
+import 'bulma/css/bulma.css';
+`
+
 const App = () => {
     const serviceRef = useRef<any>();
-    const [input, setInput] = useState(defaultCssCode);
+    const [input, setInput] = useState(defaultJsCssCode);
     const [code, setCode] = useState('');
     const debug = true;
 
