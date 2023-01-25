@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {debug} from "../global/config";
 import CodeEditor from "./editor/code-editor";
 import Preview from "./preview";
@@ -12,15 +12,16 @@ const CodeCell = () => {
     const [input, setInput] = useState(preset.defaultReactNewCode);
     const [code, setCode] = useState('');
 
-    const onSubmit = async (value: string) => {
-        if (debug) {
-            console.log(input);
-        }
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            const output = await bundle(input);
+            setCode(output);
+        }, 500);
 
-        // The build call using esbuild which creates a bundle
-        const output = await bundle(value);
-        setCode(output);
-    }
+        return () => {
+          clearTimeout(timer);
+        };
+    }, [input]);
 
     const fontSize = "1.2em";
 
@@ -35,7 +36,6 @@ const CodeCell = () => {
                         initialValue={input}
                         onChange={value => {
                             setInput(value);
-                            onSubmit(value);
                         }}
                     />
                 </Resizable>
