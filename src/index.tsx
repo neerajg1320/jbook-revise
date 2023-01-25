@@ -43,6 +43,19 @@ ReactDOM.render(
 );
 `
 
+const defaultReactNewCode = `\
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+const rootElement = document.getElementById('root');
+
+const root = createRoot(rootElement);
+const App = () => <h1>Hello and all</h1>;
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+`
 
 const defaultErrorCode = `\
 console.base();
