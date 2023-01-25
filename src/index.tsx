@@ -166,28 +166,16 @@ const App = () => {
                 }}
             />
 
-            <textarea
-                value={input}
-                onChange={e => {
-                    setInput(e.target.value);
-                    if (eagerBundling) {
-                        onSubmit(e.target.value);
-                    }
-                }}
-                cols={80}
-                rows={10}
-                style={{fontSize}}
-            />
-            <div>
-                {!eagerBundling &&
-                    <button
-                        onClick={e => onSubmit(null)}
-                        style={{fontSize}}
-                    >
-                        Submit
-                    </button>
-                }
-            </div>
+            {!eagerBundling &&
+                <div>
+                  <button
+                      onClick={e => onSubmit(null)}
+                      style={{fontSize}}
+                  >
+                    Submit
+                  </button>
+                </div>
+            }
 
             <iframe
                 ref={iframeRef}
