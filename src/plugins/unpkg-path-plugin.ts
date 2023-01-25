@@ -4,19 +4,25 @@ import localforage from "localforage";
 
 const debug = false;
 
-const fileCache = localforage.createInstance({
-    name: 'filecache'
-});
+const cacheEnabled = true;
+let fileCache: LocalForage;
 
-if (debug) {
-    (async () => {
-        await fileCache.setItem('color', 'red');
+if (cacheEnabled) {
+    fileCache = localforage.createInstance({
+        name: 'fileCache'
+    });
 
-        const color = await fileCache.getItem('color');
-
-        console.log('color:', color);
-    })();
+    // Sample function to demonstrate usage of fileCache
+    if (debug) {
+        (async () => {
+            await fileCache.setItem('color', 'red');
+            const color = await fileCache.getItem('color');
+            console.log('color:', color);
+        })();
+    }
 }
+
+
 
 export const unpkgPathPlugin = () => {
     return {
@@ -48,8 +54,9 @@ export const unpkgPathPlugin = () => {
                     return {
                         loader: 'jsx',
                         // tiny-test-pkg, medium-test-pkg, nested-tested-pkg
+                        // using react-select loads more than 50 dependencies
                         contents: `
-              import React, {useState} from 'react-select';
+              import React, {useState} from 'react';
               console.log(react, useState);
             `,
                     };
@@ -57,12 +64,15 @@ export const unpkgPathPlugin = () => {
 
                 // If we have already fetched this file then return from cache
                 // We use args.path as key in the cache
-                const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
-                if (cachedResult) {
-                    return cachedResult;
+                if (cacheEnabled) {
+                    const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
+                    if (cachedResult) {
+                        console.log(`loading ${args.path} from cache`);
+                        return cachedResult;
+                    }
                 }
 
-                // Fetch the file from repo, add object to cache, and return object
+                // Fetch the package from repo
                 const {data, request} = await axios.get(args.path);
                 const result: esbuild.OnLoadResult = {
                     loader: 'jsx',
@@ -70,8 +80,11 @@ export const unpkgPathPlugin = () => {
                     resolveDir: new URL('./', request.responseURL).pathname
                 }
 
-                // Store result in cache
-                await fileCache.setItem(args.path, result);
+                if (cacheEnabled) {
+                    // Store result in cache
+                    await fileCache.setItem(args.path, result);
+                }
+
                 return result;
             });
         },
