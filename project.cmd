@@ -196,3 +196,7 @@ We create a src/types.d.ts and add following to override typescript error.
 declare module 'monaco-jsx-highlighter';
 We used the custom created syntax.css for the code
 
+# We have refactored the code into Preview, CodeCell, bundler etc
+
+## Add support for Resizable using react-resizable
+npm install --save-exact react-resizable@3.0.4 @types/react-resizable@3.0.2 --legacy-peer-deps
