@@ -2,6 +2,7 @@ import * as esbuild from 'esbuild-wasm';
 import React, {useEffect, useState, useRef} from "react";
 import { createRoot } from "react-dom/client";
 import {unpkgPathPlugin} from "./plugins/unpkg-path-plugin";
+import {fetchPlugin} from "./plugins/fetch-plugin";
 
 const defaultCode = `\
 const a = 1;
@@ -13,9 +14,14 @@ import React from 'react';
 console.log(React);
 `;
 
+const defaultPackageTestCode = `\
+import pkg from 'nested-test-pkg';
+console.log(pkg);
+`;
+
 const App = () => {
     const serviceRef = useRef<any>();
-    const [input, setInput] = useState(defaultReactCode);
+    const [input, setInput] = useState(defaultPackageTestCode);
     const [code, setCode] = useState('');
     const debug = true;
 
@@ -46,11 +52,14 @@ const App = () => {
 
         // The build call using esbuild which creates a bundle
         const result = await serviceRef.current.build({
-            entryPoints: ['index.js'],
+            entryPoints: ['index.jsx'],
             bundle: true,
             write: false,
             // TBVE: Check if we can create an inmemory file and pass path to it
-            plugins: [unpkgPathPlugin(input)],
+            plugins: [
+                unpkgPathPlugin(),
+                fetchPlugin(input)
+            ],
             define: {
                 'process.env.NODE_ENV': '"production"',
                 global: 'window'
