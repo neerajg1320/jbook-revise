@@ -35,7 +35,7 @@ const Preview: React.FC<PreviewProps> = ({code}) => {
         // We need to wait for the iframe to be ready
         setTimeout(() => {
             iframeRef.current.contentWindow.postMessage(code, '*');
-        }, 10);
+        }, 50);
     }, [code]);
 
     return (
