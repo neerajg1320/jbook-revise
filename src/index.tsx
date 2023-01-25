@@ -44,6 +44,7 @@ const defaultErrorCode = `\
 console.base();
 `
 const evalInMain = false;
+const showCodePreview = false;
 
 const App = () => {
     const serviceRef = useRef<any>();
@@ -102,7 +103,7 @@ const App = () => {
             console.log(`result:`, result.outputFiles[0].text);
         }
 
-        // setCode(result.outputFiles[0].text);
+        setCode(result.outputFiles[0].text);
         iframeRef.current.contentWindow.postMessage(result.outputFiles[0].text, '*');
 
         if (evalInMain) {
@@ -167,7 +168,7 @@ const App = () => {
                 srcDoc={html}
             />
 
-            <pre style={{fontSize}}>{code}</pre>
+            {showCodePreview && <pre style={{fontSize}}>{code}</pre>}
         </div>
     );
 }
