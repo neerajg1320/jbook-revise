@@ -19,9 +19,13 @@ import pkg from 'nested-test-pkg';
 console.log(pkg);
 `;
 
+const defaultCssCode = `\
+import 'bulma/css/bulma.css';
+`
+
 const App = () => {
     const serviceRef = useRef<any>();
-    const [input, setInput] = useState(defaultPackageTestCode);
+    const [input, setInput] = useState(defaultCssCode);
     const [code, setCode] = useState('');
     const debug = true;
 

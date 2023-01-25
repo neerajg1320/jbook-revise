@@ -53,9 +53,25 @@ export const fetchPlugin = (inputCode: string) => {
 
                 // Fetch the package from repo
                 const {data, request} = await axios.get(args.path);
+
+                const fileType = args.path.match(/.css$/) ? 'css' : 'jsx';
+                const escapedCssStr = data
+                    .replace(/\n/g, '')
+                    .replace(/"/g, '\\"')
+                    .replace(/'/g, "\\'" )
+
+                const contents = fileType === 'css' ?
+                    `
+                    const style = document.createElement('style');
+                    style.innerText = '${escapedCssStr}';
+                    document.head.appendChild(style);
+                    `
+                    :
+                    data;
+
                 const result: esbuild.OnLoadResult = {
                     loader: 'jsx',
-                    contents: data,
+                    contents,
                     resolveDir: new URL('./', request.responseURL).pathname
                 }
 
