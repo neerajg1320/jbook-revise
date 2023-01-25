@@ -43,12 +43,13 @@ ReactDOM.render(
 );
 `
 
+
 const defaultErrorCode = `\
 console.base();
 `
 const evalInMain = false;
 const showCodePreview = false;
-const eagerBundling = false;
+const eagerBundling = true;
 
 const App = () => {
     const serviceRef = useRef<any>();
@@ -157,8 +158,14 @@ const App = () => {
         <div>
             <CodeEditor
                 initialValue="const a = 1;"
-                onChange={setInput}
+                onChange={value => {
+                    setInput(value);
+                    if (eagerBundling) {
+                        onSubmit(value);
+                    }
+                }}
             />
+
             <textarea
                 value={input}
                 onChange={e => {
