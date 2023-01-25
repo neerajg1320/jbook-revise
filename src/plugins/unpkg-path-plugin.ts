@@ -3,6 +3,8 @@ import axios from 'axios';
 import localforage from "localforage";
 
 const debug = false;
+const debugPlugin = false;
+const debugCache = true;
 
 const cacheEnabled = true;
 let fileCache: LocalForage;
@@ -23,13 +25,15 @@ if (cacheEnabled) {
 }
 
 
-
 export const unpkgPathPlugin = () => {
     return {
         name: 'unpkg-path-plugin',
         setup(build: esbuild.PluginBuild) {
             build.onResolve({ filter: /.*/ }, async (args: any) => {
-                console.log('onResolve', args);
+                if (debugPlugin) {
+                    console.log('onResolve', args);
+                }
+
                 if (args.path === 'index.js') {
                     return { path: args.path, namespace: 'a' };
                 }
@@ -48,7 +52,9 @@ export const unpkgPathPlugin = () => {
             });
 
             build.onLoad({ filter: /.*/ }, async (args: any) => {
-                console.log('onLoad', args);
+                if (debugPlugin) {
+                    console.log('onLoad', args);
+                }
 
                 if (args.path === 'index.js') {
                     return {
@@ -67,7 +73,9 @@ export const unpkgPathPlugin = () => {
                 if (cacheEnabled) {
                     const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
                     if (cachedResult) {
-                        console.log(`loading ${args.path} from cache`);
+                        if (debugCache) {
+                            console.log(`loaded ${args.path} from cache`);
+                        }
                         return cachedResult;
                     }
                 }
@@ -83,6 +91,9 @@ export const unpkgPathPlugin = () => {
                 if (cacheEnabled) {
                     // Store result in cache
                     await fileCache.setItem(args.path, result);
+                    if (debugCache) {
+                        console.log(`stored ${args.path} to cache`);
+                    }
                 }
 
                 return result;

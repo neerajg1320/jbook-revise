@@ -7,6 +7,7 @@ const App = () => {
     const serviceRef = useRef<any>();
     const [input, setInput] = useState('');
     const [code, setCode] = useState('');
+    const debug = false;
 
     const startService = async () => {
         serviceRef.current =  await esbuild.startService({
@@ -45,7 +46,10 @@ const App = () => {
             }
         })
 
-        console.log(`result:`, result);
+        if (debug) {
+            console.log(`result:`, result);
+        }
+
         setCode(result.outputFiles[0].text);
     }
 
