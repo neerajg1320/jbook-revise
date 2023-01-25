@@ -1,4 +1,7 @@
-import MonacoEditor from '@monaco-editor/react';
+import MonacoEditor, {EditorDidMount} from '@monaco-editor/react';
+import prettier from 'prettier';
+import parser from 'prettier/parser-babel';
+import {useRef} from "react";
 
 interface CodeEditorProps {
     initialValue: string;
@@ -6,35 +9,54 @@ interface CodeEditorProps {
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({initialValue, onChange}) => {
+    const editorRef = useRef<any>();
+
     // invoked when editor is first time displayed
-    const onEditorDidMount = (getValue: () => string, monacoEditor: any) => {
-        // console.log(`editorValue:`, getValue());
+    const onEditorDidMount: EditorDidMount = (getValue, monacoEditor) => {
+        editorRef.current = monacoEditor;
+
         monacoEditor.onDidChangeModelContent(() => {
-            if (onChange) {
-                onChange(getValue());
-            }
+            onChange(getValue());
         });
+
+        monacoEditor.getModel()?.updateOptions({tabSize: 2});
+    };
+
+    const onFormatClick = () => {
+        const monacoEditor = editorRef.current;
+        // get, format, set value in editor
+        const unformatted = monacoEditor.getModel().getValue();
+        const formatted = prettier.format(unformatted, {
+            parser: "babel",
+            plugins: [parser],
+            useTabs: false,
+            semi: true,
+            singleQuote: true
+        });
+        monacoEditor.setValue(formatted);
     };
 
     return (
-      // value is only the initialValue
-      <MonacoEditor
-        editorDidMount={onEditorDidMount}
-        value={initialValue}
-        height="200px"
-        language="javascript"
-        theme="dark"
-        options={{
-            wordWrap: 'on',
-            minimap: {enabled: false},
-            showUnused: false,
-            folding: false,
-            lineNumbersMinChars: 3,
-            fontSize: 16,
-            scrollBeyondLastLine: false,
-            automaticLayout: true
-        }}
-      />
+      <div>
+          <button onClick={onFormatClick}>Format</button>
+          <MonacoEditor
+            editorDidMount={onEditorDidMount}
+            value={initialValue}
+            height="200px"
+            language="javascript"
+            theme="dark"
+            options={{
+                wordWrap: 'on',
+                minimap: {enabled: false},
+                showUnused: false,
+                folding: false,
+                lineNumbersMinChars: 3,
+                fontSize: 16,
+                scrollBeyondLastLine: false,
+                automaticLayout: true
+            }}
+          />
+      </div>
     );
 }
 

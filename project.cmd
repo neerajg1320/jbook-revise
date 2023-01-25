@@ -176,3 +176,6 @@ We are going to use Editor
 npm install  monaco-editor --legacy-peer-deps
 # Need to set options in editor
 # Need to support onChange kind of function in editor
+# Add npm package prettier to our editor to add code formatter
+npm install prettier @types/prettier --legacy-peer-deps
+
