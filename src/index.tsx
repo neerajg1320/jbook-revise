@@ -91,7 +91,7 @@ const App = () => {
             return;
         }
 
-        iframeRef.current.srcdoc = html;
+
 
         let startCode;
         if (eagerBundling) {
@@ -128,7 +128,12 @@ const App = () => {
         }
 
         setCode(result.outputFiles[0].text);
-        iframeRef.current.contentWindow.postMessage(result.outputFiles[0].text, '*');
+
+        iframeRef.current.srcdoc = html;
+        // We need to wait for the iframe to be ready
+        setTimeout(() => {
+            iframeRef.current.contentWindow.postMessage(result.outputFiles[0].text, '*');
+        }, 10);
 
         if (evalInMain) {
             try {
