@@ -156,4 +156,6 @@ ReactDOM.render(
 ## It works !!!
 
 ## Error handling in input code
+# We reset the iframe DOM before the next execution.
+# This makes sure that we get saved from any errors caused by previous execution
 
