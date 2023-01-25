@@ -62,7 +62,7 @@ console.base();
 `
 const evalInMain = false;
 const showCodePreview = false;
-const eagerBundling = true;
+const eagerBundling = false;
 
 const App = () => {
     const serviceRef = useRef<any>();
