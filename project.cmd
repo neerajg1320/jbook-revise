@@ -29,9 +29,18 @@ npm view react dist.tarball
 # https://unpkg.com
 # A public CDN
 
+## Fetch packages from unpkg.com
 # Test with package https://unpkg.com/tiny-test-pkg@1.0.0/index.js
 
 # We will add axios to fetch the file from unpkg
 npm install axios
+
+## Implement caching layer
+# We are going to use indexedDB
+# We are going to use localforage library
+
+npm install localforage
+
+
 
 

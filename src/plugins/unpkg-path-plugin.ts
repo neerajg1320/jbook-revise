@@ -1,5 +1,22 @@
 import * as esbuild from 'esbuild-wasm';
 import axios from 'axios';
+import localforage from "localforage";
+
+const debug = false;
+
+const fileCache = localforage.createInstance({
+    name: 'filecache'
+});
+
+if (debug) {
+    (async () => {
+        await fileCache.setItem('color', 'red');
+
+        const color = await fileCache.getItem('color');
+
+        console.log('color:', color);
+    })();
+}
 
 export const unpkgPathPlugin = () => {
     return {
@@ -30,23 +47,32 @@ export const unpkgPathPlugin = () => {
                 if (args.path === 'index.js') {
                     return {
                         loader: 'jsx',
-                        // tiny-test-pkg, mediumn-test-pkg, nested-tested-pkg
+                        // tiny-test-pkg, medium-test-pkg, nested-tested-pkg
                         contents: `
-              import React from 'react';
-              console.log(react);
+              import React, {useState} from 'react-select';
+              console.log(react, useState);
             `,
                     };
-                } else {
-                    const {data, request} = await axios.get(args.path);
-                    // console.log(`data:`, data);
-                    console.log(`request`, request);
-
-                    return {
-                        loader: 'jsx',
-                        contents: data,
-                        resolveDir: new URL('./', request.responseURL).pathname
-                    }
                 }
+
+                // If we have already fetched this file then return from cache
+                // We use args.path as key in the cache
+                const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
+                if (cachedResult) {
+                    return cachedResult;
+                }
+
+                // Fetch the file from repo, add object to cache, and return object
+                const {data, request} = await axios.get(args.path);
+                const result: esbuild.OnLoadResult = {
+                    loader: 'jsx',
+                    contents: data,
+                    resolveDir: new URL('./', request.responseURL).pathname
+                }
+
+                // Store result in cache
+                await fileCache.setItem(args.path, result);
+                return result;
             });
         },
     };
