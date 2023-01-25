@@ -67,7 +67,7 @@ const eagerBundling = false;
 const App = () => {
     const serviceRef = useRef<any>();
     const iframeRef = useRef<any>();
-    const [input, setInput] = useState(defaultErrorCode);
+    const [input, setInput] = useState(defaultReactNewCode);
     const [code, setCode] = useState('');
 
     const startService = async () => {
@@ -170,7 +170,7 @@ const App = () => {
     return (
         <div>
             <CodeEditor
-                initialValue="const a = 1;"
+                initialValue={input}
                 onChange={value => {
                     setInput(value);
                     if (eagerBundling) {
