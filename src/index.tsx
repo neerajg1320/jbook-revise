@@ -1,12 +1,12 @@
 import 'bulmaswatch/superhero/bulmaswatch.min.css';
-import * as esbuild from 'esbuild-wasm';
+
 import React, {useEffect, useState, useRef} from "react";
 import { createRoot } from "react-dom/client";
 import {debug} from "./global/config";
-import {unpkgPathPlugin} from "./plugins/unpkg-path-plugin";
-import {fetchPlugin} from "./plugins/fetch-plugin";
+
 import CodeEditor from "./components/editor/code-editor";
 import Preview from "./components/preview";
+import bundle from "./bundler";
 
 
 const defaultCode = `\
@@ -52,30 +52,12 @@ const showCodePreview = false;
 const eagerBundling = false;
 
 const App = () => {
-    const serviceRef = useRef<any>();
-
-    const [input, setInput] = useState(defaultErrorCode);
+    const [input, setInput] = useState(defaultCode);
     const [code, setCode] = useState('');
-
-    const startService = async () => {
-        serviceRef.current =  await esbuild.startService({
-            worker: true,
-            // wasmURL: '/esbuild.wasm' // picks esbuild.wasm placed in public folder
-            wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm'
-        });
-    };
-
-    useEffect(() => {
-        startService()
-    }, []);
 
     const onSubmit = async (value: string|null) => {
         if (debug) {
             console.log(input);
-        }
-
-        if (!serviceRef.current) {
-            return;
         }
 
         let startCode;
@@ -86,31 +68,13 @@ const App = () => {
         }
 
         // The build call using esbuild which creates a bundle
-        const result = await serviceRef.current.build({
-            entryPoints: ['index.jsx'],
-            bundle: true,
-            write: false,
-            // TBVE: Check if we can create an inmemory file and pass path to it
-            plugins: [
-                unpkgPathPlugin(),
-                fetchPlugin(startCode)
-            ],
-            define: {
-                'process.env.NODE_ENV': '"production"',
-                global: 'window'
-            }
-        })
-
-        if (debug) {
-            console.log(`result:`, result.outputFiles[0].text);
-        }
-
-        setCode(result.outputFiles[0].text);
+        const output = await bundle(startCode);
+        setCode(output);
 
         if (evalInMain) {
             try {
                 // The eval here causes the generated js and css to be applied on current application
-                eval(result.outputFiles[0].text);
+                eval(output);
             } catch (error) {
                 alert(error);
             }
@@ -122,21 +86,10 @@ const App = () => {
     return (
         <div>
             <CodeEditor
-                initialValue="const a = 1;"
+                initialValue={input}
                 onChange={setInput}
             />
-            <textarea
-                value={input}
-                onChange={e => {
-                    setInput(e.target.value);
-                    if (eagerBundling) {
-                        onSubmit(e.target.value);
-                    }
-                }}
-                cols={80}
-                rows={10}
-                style={{fontSize}}
-            />
+
             <div>
                 {!eagerBundling &&
                     <button
