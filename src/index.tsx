@@ -3,6 +3,7 @@ import React, {useEffect, useState, useRef} from "react";
 import { createRoot } from "react-dom/client";
 import {unpkgPathPlugin} from "./plugins/unpkg-path-plugin";
 import {fetchPlugin} from "./plugins/fetch-plugin";
+import {debug} from "./global/config";
 
 const defaultCode = `\
 const a = 1;
@@ -27,17 +28,19 @@ const defaultJsCssCode = `\
 import pkg from 'tiny-test-pkg';
 import 'bulma/css/bulma.css';
 `
+const evalInMain = false;
 
 const App = () => {
     const serviceRef = useRef<any>();
-    const [input, setInput] = useState(defaultJsCssCode);
+    const iframeRef = useRef<any>();
+    const [input, setInput] = useState(defaultCode);
     const [code, setCode] = useState('');
-    const debug = true;
 
     const startService = async () => {
         serviceRef.current =  await esbuild.startService({
             worker: true,
-            wasmURL: '/esbuild.wasm' // picks esbuild.wasm placed in public folder
+            // wasmURL: '/esbuild.wasm' // picks esbuild.wasm placed in public folder
+            wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm'
         });
     };
 
@@ -46,7 +49,10 @@ const App = () => {
     }, []);
 
     const onSubmit = async () => {
-        console.log(input);
+        if (debug) {
+            console.log(input);
+        }
+
         if (!serviceRef.current) {
             return;
         }
@@ -79,10 +85,39 @@ const App = () => {
             console.log(`result:`, result.outputFiles[0].text);
         }
 
-        setCode(result.outputFiles[0].text);
+        // setCode(result.outputFiles[0].text);
+        iframeRef.current.contentWindow.postMessage(result.outputFiles[0].text, '*');
+
+        if (evalInMain) {
+            try {
+                // The eval here causes the generated js and css to be applied on current application
+                eval(result.outputFiles[0].text);
+            } catch (error) {
+                alert(error);
+            }
+        }
     }
 
     const fontSize = "1.2em";
+
+    const htmlSnippetUnsed = `
+    <script>
+        ${code}
+    </script>
+    `
+    const html = `\
+    <html>
+    <head></head>
+    <body>
+        <div id="root"></div>
+        <script>
+            window.addEventListener('message', (event) => {
+              eval(event.data);
+            }, false);
+        </script>
+    </body>
+    </html>
+    `;
 
     return (
         <div>
@@ -102,10 +137,18 @@ const App = () => {
                 </button>
             </div>
 
+            <iframe
+                ref={iframeRef}
+                title="userCode"
+                sandbox="allow-scripts"
+                srcDoc={html}
+            />
+
             <pre style={{fontSize}}>{code}</pre>
         </div>
     );
 }
+
 
 const rootElement = document.getElementById("root") as HTMLElement;
 const root = createRoot(rootElement);
