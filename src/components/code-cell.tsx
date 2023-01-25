@@ -30,14 +30,15 @@ const CodeCell = () => {
                 height: '100%',
                 display: "flex", flexDirection:"row"
             }}>
-                <CodeEditor
-                    initialValue={input}
-                    onChange={value => {
-                        setInput(value);
-                        onSubmit(value);
-                    }}
-                />
-
+                <Resizable direction="horizontal">
+                    <CodeEditor
+                        initialValue={input}
+                        onChange={value => {
+                            setInput(value);
+                            onSubmit(value);
+                        }}
+                    />
+                </Resizable>
                 <Preview code={code} />
 
                 {showCodePreview && <pre style={{fontSize}}>{code}</pre>}
