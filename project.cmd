@@ -159,3 +159,18 @@ ReactDOM.render(
 # We reset the iframe DOM before the next execution.
 # This makes sure that we get saved from any errors caused by previous execution
 
+## EagerBundling: supported with a flag
+
+## Monaco Editor: need to use --legacy-peer-deps
+npm install --save-exact @monaco-editor/react@3.7.5 --legacy-peer-deps
+
+The open source options:
+CodeMirror
+Ace Editor
+Monaco Editor
+https://www.npmjs.com/package/@monaco-editor/react
+Two options: Editor and Diff Editor
+We are going to use Editor
+
+# Install monaco-editor package just to view its type definitions
+npm install  monaco-editor --legacy-peer-deps

@@ -1,9 +1,11 @@
 import * as esbuild from 'esbuild-wasm';
 import React, {useEffect, useState, useRef} from "react";
 import { createRoot } from "react-dom/client";
+import {debug} from "./global/config";
 import {unpkgPathPlugin} from "./plugins/unpkg-path-plugin";
 import {fetchPlugin} from "./plugins/fetch-plugin";
-import {debug} from "./global/config";
+import CodeEditor from "./components/code-editor";
+
 
 const defaultCode = `\
 const a = 1;
@@ -152,6 +154,7 @@ const App = () => {
 
     return (
         <div>
+            <CodeEditor />
             <textarea
                 value={input}
                 onChange={e => {
