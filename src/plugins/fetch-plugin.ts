@@ -25,18 +25,21 @@ export const fetchPlugin = (inputCode: string) => {
     return {
         name: 'fetch-plugin',
         setup(build: esbuild.PluginBuild) {
-            build.onLoad({ filter: /.*/ }, async (args: any) => {
+            build.onLoad({filter: /^index\.js[x]?$/}, async (args: any) => {
                 if (debugPlugin) {
                     console.log('onLoad', args);
                 }
+                return {
+                    loader: 'jsx',
+                    // tiny-test-pkg, medium-test-pkg, nested-tested-pkg
+                    // using react-select loads more than 50 dependencies
+                    contents: inputCode,
+                };
+            });
 
-                if (args.path === 'index.js' || args.path === 'index.jsx') {
-                    return {
-                        loader: 'jsx',
-                        // tiny-test-pkg, medium-test-pkg, nested-tested-pkg
-                        // using react-select loads more than 50 dependencies
-                        contents: inputCode,
-                    };
+            build.onLoad({filter: /.css$/}, async (args: any) => {
+                if (debugPlugin) {
+                    console.log('onLoad', args);
                 }
 
                 // If we have already fetched this file then return from cache
@@ -54,24 +57,59 @@ export const fetchPlugin = (inputCode: string) => {
                 // Fetch the package from repo
                 const {data, request} = await axios.get(args.path);
 
-                const fileType = args.path.match(/.css$/) ? 'css' : 'jsx';
+                // start: The custom part for css
                 const escapedCssStr = data
                     .replace(/\n/g, '')
                     .replace(/"/g, '\\"')
                     .replace(/'/g, "\\'" )
 
-                const contents = fileType === 'css' ?
-                    `
+                const contents = `
                     const style = document.createElement('style');
                     style.innerText = '${escapedCssStr}';
                     document.head.appendChild(style);
-                    `
-                    :
-                    data;
+                    `;
+                // end
 
                 const result: esbuild.OnLoadResult = {
                     loader: 'jsx',
                     contents,
+                    resolveDir: new URL('./', request.responseURL).pathname
+                }
+
+                if (cacheEnabled) {
+                    // Store result in cache
+                    await fileCache.setItem(args.path, result);
+                    if (debugCache) {
+                        console.log(`stored ${args.path} to cache`);
+                    }
+                }
+
+                return result;
+
+            });
+
+            build.onLoad({ filter: /.*/ }, async (args: any) => {
+                if (debugPlugin) {
+                    console.log('onLoad', args);
+                }
+
+                // If we have already fetched this file then return from cache
+                // We use args.path as key in the cache
+                if (cacheEnabled) {
+                    const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
+                    if (cachedResult) {
+                        if (debugCache) {
+                            console.log(`loaded ${args.path} from cache`);
+                        }
+                        return cachedResult;
+                    }
+                }
+
+                // Fetch the package from repo
+                const {data, request} = await axios.get(args.path);
+                const result: esbuild.OnLoadResult = {
+                    loader: 'jsx',
+                    contents: data,
                     resolveDir: new URL('./', request.responseURL).pathname
                 }
 
