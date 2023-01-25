@@ -183,3 +183,16 @@ npm install prettier @types/prettier --legacy-peer-deps
 npm install bulmaswatch --legacy-peer-deps
 In index.tsx add:
 import 'bulmaswatch/superhero/bulmaswatch.min.css';
+
+## To make monaco-jsx-highlighter and jscodeshift work we need to downgrade to react-scripts "4.0.1"
+rm package-lock.json
+rm -r node_modules
+npm install --legacy-peer-deps
+
+## JSX highlighting in Monaco Editor
+npm install --save-exact monaco-jsx-highlighter@0.0.15 jscodeshift@0.11.0 @types/jscodeshift@0.7.2 --legacy-peer-deps
+
+We create a src/types.d.ts and add following to override typescript error.
+declare module 'monaco-jsx-highlighter';
+We used the custom created syntax.css for the code
+
