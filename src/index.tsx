@@ -6,6 +6,7 @@ import {debug} from "./global/config";
 import {unpkgPathPlugin} from "./plugins/unpkg-path-plugin";
 import {fetchPlugin} from "./plugins/fetch-plugin";
 import CodeEditor from "./components/editor/code-editor";
+import Preview from "./components/preview";
 
 
 const defaultCode = `\
@@ -52,7 +53,7 @@ const eagerBundling = false;
 
 const App = () => {
     const serviceRef = useRef<any>();
-    const iframeRef = useRef<any>();
+
     const [input, setInput] = useState(defaultErrorCode);
     const [code, setCode] = useState('');
 
@@ -77,21 +78,12 @@ const App = () => {
             return;
         }
 
-        iframeRef.current.srcdoc = html;
-
         let startCode;
         if (eagerBundling) {
             startCode = value as string;
         } else {
             startCode = input;
         }
-        // Disabled when we switched over to build instead of transform
-        //
-        // console.log(serviceRef.current);
-        // const result = await serviceRef.current.transform(input, {
-        //     loader: 'jsx',
-        //     target: 'es2015'
-        // });
 
         // The build call using esbuild which creates a bundle
         const result = await serviceRef.current.build({
@@ -114,7 +106,6 @@ const App = () => {
         }
 
         setCode(result.outputFiles[0].text);
-        iframeRef.current.contentWindow.postMessage(result.outputFiles[0].text, '*');
 
         if (evalInMain) {
             try {
@@ -127,31 +118,6 @@ const App = () => {
     }
 
     const fontSize = "1.2em";
-
-    const htmlSnippetUnsed = `
-    <script>
-        ${code}
-    </script>
-    `
-    const html = `\
-    <html>
-    <head></head>
-    <body>
-        <div id="root"></div>
-        <script>
-            window.addEventListener('message', (event) => {
-              try {
-                eval(event.data);  
-              } catch (err) {
-                const root = document.querySelector('#root');
-                root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + err + '</div>';
-                console.error(err);
-              }
-            }, false);
-        </script>
-    </body>
-    </html>
-    `;
 
     return (
         <div>
@@ -182,12 +148,7 @@ const App = () => {
                 }
             </div>
 
-            <iframe
-                ref={iframeRef}
-                title="userCode"
-                sandbox="allow-scripts"
-                srcDoc={html}
-            />
+            <Preview code={code} />
 
             {showCodePreview && <pre style={{fontSize}}>{code}</pre>}
         </div>
