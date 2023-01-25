@@ -3,9 +3,19 @@ import React, {useEffect, useState, useRef} from "react";
 import { createRoot } from "react-dom/client";
 import {unpkgPathPlugin} from "./plugins/unpkg-path-plugin";
 
+const defaultCode = `\
+const a = 1;
+console.log(a);
+`;
+
+const defaultReactCode = `\
+import React from 'react';
+console.log(React);
+`;
+
 const App = () => {
     const serviceRef = useRef<any>();
-    const [input, setInput] = useState('');
+    const [input, setInput] = useState(defaultReactCode);
     const [code, setCode] = useState('');
     const debug = true;
 

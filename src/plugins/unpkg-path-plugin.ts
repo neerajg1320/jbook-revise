@@ -29,13 +29,13 @@ export const unpkgPathPlugin = (inputCode: string) => {
     return {
         name: 'unpkg-path-plugin',
         setup(build: esbuild.PluginBuild) {
+            build.onResolve({filter: /(^index\.jsx?$)/}, (args: any) => {
+                return { path: args.path, namespace: 'a'}
+            });
+
             build.onResolve({ filter: /.*/ }, async (args: any) => {
                 if (debugPlugin) {
                     console.log('onResolve', args);
-                }
-
-                if (args.path === 'index.js') {
-                    return { path: args.path, namespace: 'a' };
                 }
 
                 if (args.path.includes('./') || args.path.includes('../') ) {
