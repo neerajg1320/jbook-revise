@@ -5,7 +5,7 @@ import { createRoot } from "react-dom/client";
 import {debug} from "./global/config";
 import {unpkgPathPlugin} from "./plugins/unpkg-path-plugin";
 import {fetchPlugin} from "./plugins/fetch-plugin";
-import CodeEditor from "./components/code-editor";
+import CodeEditor from "./components/editor/code-editor";
 
 
 const defaultCode = `\
