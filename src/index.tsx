@@ -28,12 +28,23 @@ const defaultJsCssCode = `\
 import pkg from 'tiny-test-pkg';
 import 'bulma/css/bulma.css';
 `
+const defaultReactComponentCode = `\
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const App = () => <h1>Hi there!</h1>
+
+ReactDOM.render(
+  <App/>,
+  document.querySelector('#root')
+);
+`
 const evalInMain = false;
 
 const App = () => {
     const serviceRef = useRef<any>();
     const iframeRef = useRef<any>();
-    const [input, setInput] = useState(defaultCode);
+    const [input, setInput] = useState(defaultReactComponentCode);
     const [code, setCode] = useState('');
 
     const startService = async () => {

@@ -123,3 +123,36 @@ The message is received at the parent.
 # So we avoid passing long code via srcDoc
 # Also the code is shared as a string instead of an html snippet.
 
+# The new way of getting the generated code in iframe and executing it is working
+# Given below is the source of iframe passed via srcDoc to it.
+    const html = `\
+    <html>
+    <head></head>
+    <body>
+        <div id="root"></div>
+        <script>
+            window.addEventListener('message', (event) => {
+              eval(event.data);
+            }, false);
+        </script>
+    </body>
+    </html>
+    `;
+
+# Now we will try creating a react component and running it.
+# We will use the div with id root for the same.
+
+# When we enter the following react code in the input window
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const App = () => <h1>Hi there!</h1>
+
+ReactDOM.render(
+  <App/>,
+  document.querySelector('#root')
+);
+
+## It works !!!
+
+
