@@ -6,6 +6,7 @@ import {debug} from "./global/config";
 import {unpkgPathPlugin} from "./plugins/unpkg-path-plugin";
 import {fetchPlugin} from "./plugins/fetch-plugin";
 import CodeEditor from "./components/editor/code-editor";
+import Preview from "./components/preview";
 
 
 const defaultCode = `\
@@ -66,7 +67,6 @@ const eagerBundling = false;
 
 const App = () => {
     const serviceRef = useRef<any>();
-    const iframeRef = useRef<any>();
     const [input, setInput] = useState(defaultReactNewCode);
     const [code, setCode] = useState('');
 
@@ -90,8 +90,6 @@ const App = () => {
         if (!serviceRef.current) {
             return;
         }
-
-
 
         let startCode;
         if (eagerBundling) {
@@ -129,12 +127,6 @@ const App = () => {
 
         setCode(result.outputFiles[0].text);
 
-        iframeRef.current.srcdoc = html;
-        // We need to wait for the iframe to be ready
-        setTimeout(() => {
-            iframeRef.current.contentWindow.postMessage(result.outputFiles[0].text, '*');
-        }, 10);
-
         if (evalInMain) {
             try {
                 // The eval here causes the generated js and css to be applied on current application
@@ -146,31 +138,6 @@ const App = () => {
     }
 
     const fontSize = "1.2em";
-
-    const htmlSnippetUnsed = `
-    <script>
-        ${code}
-    </script>
-    `
-    const html = `\
-    <html>
-    <head></head>
-    <body>
-        <div id="root"></div>
-        <script>
-            window.addEventListener('message', (event) => {
-              try {
-                eval(event.data);  
-              } catch (err) {
-                const root = document.querySelector('#root');
-                root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + err + '</div>';
-                console.error(err);
-              }
-            }, false);
-        </script>
-    </body>
-    </html>
-    `;
 
     return (
         <div>
@@ -195,12 +162,7 @@ const App = () => {
                 </div>
             }
 
-            <iframe
-                ref={iframeRef}
-                title="userCode"
-                sandbox="allow-scripts"
-                srcDoc={html}
-            />
+            <Preview code={code} />
 
             {showCodePreview && <pre style={{fontSize}}>{code}</pre>}
         </div>
