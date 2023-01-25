@@ -174,3 +174,5 @@ We are going to use Editor
 
 # Install monaco-editor package just to view its type definitions
 npm install  monaco-editor --legacy-peer-deps
+# Need to set options in editor
+# Need to support onChange kind of function in editor
