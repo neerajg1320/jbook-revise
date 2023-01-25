@@ -45,6 +45,7 @@ console.base();
 `
 const evalInMain = false;
 const showCodePreview = false;
+const eagerBundling = false;
 
 const App = () => {
     const serviceRef = useRef<any>();
@@ -64,7 +65,7 @@ const App = () => {
         startService()
     }, []);
 
-    const onSubmit = async () => {
+    const onSubmit = async (value: string|null) => {
         if (debug) {
             console.log(input);
         }
@@ -75,6 +76,12 @@ const App = () => {
 
         iframeRef.current.srcdoc = html;
 
+        let startCode;
+        if (eagerBundling) {
+            startCode = value as string;
+        } else {
+            startCode = input;
+        }
         // Disabled when we switched over to build instead of transform
         //
         // console.log(serviceRef.current);
@@ -91,7 +98,7 @@ const App = () => {
             // TBVE: Check if we can create an inmemory file and pass path to it
             plugins: [
                 unpkgPathPlugin(),
-                fetchPlugin(input)
+                fetchPlugin(startCode)
             ],
             define: {
                 'process.env.NODE_ENV': '"production"',
@@ -147,18 +154,25 @@ const App = () => {
         <div>
             <textarea
                 value={input}
-                onChange={e => setInput(e.target.value)}
+                onChange={e => {
+                    setInput(e.target.value);
+                    if (eagerBundling) {
+                        onSubmit(e.target.value);
+                    }
+                }}
                 cols={80}
                 rows={10}
                 style={{fontSize}}
             />
             <div>
-                <button
-                    onClick={onSubmit}
-                    style={{fontSize}}
-                >
-                    Submit
-                </button>
+                {!eagerBundling &&
+                    <button
+                        onClick={e => onSubmit(null)}
+                        style={{fontSize}}
+                    >
+                        Submit
+                    </button>
+                }
             </div>
 
             <iframe
