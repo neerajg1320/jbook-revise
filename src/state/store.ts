@@ -53,7 +53,7 @@ if (reduxManualTest) {
 
         }
     });
-    
+
     console.log(store.getState());
 }
 
