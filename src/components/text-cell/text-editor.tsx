@@ -3,12 +3,18 @@ import './editor-dark-theme.css';
 import {useEffect, useRef, useState} from "react";
 import MDEditor from '@uiw/react-md-editor';
 import {debugListeners} from "../../global/config";
+import {Cell} from "../../state";
+import {useActions} from "../../hooks/use-actions";
 
+interface TextEditorProps {
+    cell: Cell;
+};
 
-const TextEditor = () => {
+const TextEditor: React.FC<TextEditorProps> = ({cell}) => {
     const divRef = useRef<HTMLDivElement | null>(null);
     const [editing, setEditing] = useState(false);
-    const [value, setValue] = useState('# Header');
+    // const [value, setValue] = useState('# Header');
+    const { updateCell } = useActions();
 
     useEffect(() => {
         const listener = (event: MouseEvent) => {
@@ -45,7 +51,7 @@ const TextEditor = () => {
     if (editing) {
         return (
             <div className="text-editor" ref={divRef}>
-                <MDEditor value={value} onChange={(v) => setValue(v || '')}/>
+                <MDEditor value={cell.content} onChange={(v) => updateCell(cell.id,v || '')}/>
             </div>
         );
     }
@@ -53,7 +59,7 @@ const TextEditor = () => {
     return (
       <div className="text-editor card" onClick={() => setEditing(true)}>
           <div className="card-content">
-            <MDEditor.Markdown source={value} />
+            <MDEditor.Markdown source={cell.content} />
           </div>
       </div>
     );

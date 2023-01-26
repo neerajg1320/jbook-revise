@@ -2,8 +2,7 @@ import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import reducers from './reducers';
 import {reduxManualTest} from "../global/config";
-import {ActionType} from "./action-types";
-
+// import {ActionType} from "./action-types";
 
 
 export const store = createStore(
@@ -13,7 +12,7 @@ export const store = createStore(
 );
 
 
-if (reduxManualTest) {
+export const populateStoreManual = () => {
     // The import syntax doesn't work inside block
     const {ActionType} = require("./action-types");
 
@@ -26,7 +25,6 @@ if (reduxManualTest) {
         payload: {
             id: null,
             type: 'code',
-
         }
     });
 
@@ -36,8 +34,7 @@ if (reduxManualTest) {
         type: ActionType.INSERT_CELL_AFTER,
         payload: {
             id: null,
-            type: 'text',
-
+            type: 'code',
         }
     });
 
@@ -50,11 +47,13 @@ if (reduxManualTest) {
         payload: {
             id: firstCellId,
             type: 'text',
-
         }
     });
 
     console.log(store.getState());
 }
 
+if (reduxManualTest) {
+    populateStoreManual();
+}
 
