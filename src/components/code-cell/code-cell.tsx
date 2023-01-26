@@ -6,6 +6,7 @@ import Resizable from "./resizable";
 import {Cell} from "../../state";
 import {useActions} from "../../hooks/use-actions";
 import {useTypedSelector} from "../../hooks/use-typed-selector";
+import {useCumulativeCode} from "../../hooks/use-cumulative-code";
 
 interface CodeCellProps {
     cell: Cell;
@@ -16,64 +17,24 @@ const CodeCell: React.FC<CodeCellProps> = ({cell}) => {
     const bundle = useTypedSelector((state) => {
         return state.bundles[cell.id];
     });
-    const cumulativeCode = useTypedSelector((state) => {
-        const {data, order} = state.cells;
-        const orderedCells = order.map(id => data[id]);
-
-        const showFunc = `\
-        import _React from 'react';
-        import {createRoot as _createRoot} from 'react-dom/client';
-        var show = (value) => {
-            if (typeof(value) ==='object') {
-                const rootElement = document.querySelector('#root');
-                
-                if (value.$$typeof && value.props) {
-                    _createRoot(rootElement).render(value); 
-                } else {
-                    rootElement.innerHTML = JSON.stringify(value);
-                }
-            } else {
-                rootElement.innerHTML = value;
-            }
-        }
-        `;
-
-        const showFuncNoop = 'var show = () => {}';
-
-        const cumCode = [showFuncNoop];
-
-        for (let c of orderedCells) {
-            if (c.type === 'code') {
-                if (c.id === cell.id) {
-                    cumCode.push(showFunc);
-                }
-                cumCode.push(c.content);
-            }
-            if (c.id === cell.id) {
-                break;
-            }
-        }
-
-        return cumCode;
-    })
-
+    const cumulativeCode = useCumulativeCode(cell.id);
     // console.log(cumulativeCode);
 
     useEffect(() => {
         if (!bundle) {
-            createBundle(cell.id, cumulativeCode.join('\n'));
+            createBundle(cell.id, cumulativeCode);
             return;
         }
 
         const timer = setTimeout(async () => {
-            createBundle(cell.id, cumulativeCode.join('\n'));
+            createBundle(cell.id, cumulativeCode);
         }, 750);
 
         return () => {
           clearTimeout(timer);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cumulativeCode.join('\n'), cell.id, createBundle]);
+    }, [cumulativeCode, cell.id, createBundle]);
 
 
     return (
