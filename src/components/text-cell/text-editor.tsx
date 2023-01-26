@@ -1,6 +1,7 @@
+import './text-editor.css';
 import {useEffect, useRef, useState} from "react";
 import MDEditor from '@uiw/react-md-editor';
-import {doc} from "prettier";
+
 
 const TextEditor = () => {
     const divRef = useRef<HTMLDivElement | null>(null);

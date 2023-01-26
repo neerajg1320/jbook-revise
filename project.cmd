@@ -218,3 +218,7 @@ npm install --save-exact @uiw/react-md-editor@2.1.1 --legacy-peer-deps
 Support ViewMode and EditMode
 Add event listener to body element to detect any click outside the component
 
+# We have to fix the misplaced cursor problem. We can check using the # (...text)
+The bulma css conflicts here as it modifies .title. So we have to prevent it.
+
+
