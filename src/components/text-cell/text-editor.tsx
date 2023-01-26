@@ -2,6 +2,7 @@ import './text-editor.css';
 import './editor-dark-theme.css';
 import {useEffect, useRef, useState} from "react";
 import MDEditor from '@uiw/react-md-editor';
+import {debugListeners} from "../../global/config";
 
 
 const TextEditor = () => {
@@ -12,7 +13,9 @@ const TextEditor = () => {
     useEffect(() => {
         const listener = (event: MouseEvent) => {
             const editorDiv = divRef.current;
-            console.log(`listener invoked: editorDiv=${editorDiv}`);
+            if (debugListeners) {
+                console.log(`listener invoked: editorDiv=${editorDiv}`);
+            }
 
             // editorDiv is non-null only in editing mode
             if (editorDiv) {
@@ -26,11 +29,15 @@ const TextEditor = () => {
             }
         }
 
-        console.log(`TextEditor:useEffect() listener added`);
+        if (debugListeners) {
+            console.log(`TextEditor:useEffect() listener added`);
+        }
         document.addEventListener('click', listener, {capture: true});
 
         return () => {
-            console.log(`TextEditor:useEffect() listener removed`);
+            if (debugListeners) {
+                console.log(`TextEditor:useEffect() listener removed`);
+            }
             document.removeEventListener('click', listener, {capture: true});
         }
     }, [])
