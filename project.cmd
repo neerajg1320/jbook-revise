@@ -325,3 +325,27 @@ lerna add commander --scope=cli
 # Linking packages locally: One of the main reasons for using lerna
 lerna add local-api --scope=cli
 
+# Adding typescript support
+# Updated npx command for typescript
+npx tsc --init
+
+lerna add typescript --dev --scope=local-api
+cd packages/local-api
+npx tsc --init
+# This creates tsconfig.json
+Specify OutDir in the tsconfig.js
+"outDir": "./dist",
+"declaration": true,
+
+Create target 'start' in package.json
+"start": "tsc --watch --preserveWatchOutput"
+
+cd packages/local-api
+npm run start
+
+Update in package.json
+"main": "dist/index.js",
+"types": "dist/index.d.ts"
+
+Add typescript to CLI similarly.
+lerna add typescript --dev --scope=cli
