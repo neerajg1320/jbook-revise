@@ -255,3 +255,8 @@ return useMemo(() => bindActionCreators(actionCreators, dispatch), [dispatch]);
 ## Added support for default code in the code cell. Not there in the tutorial
 We make a bundle check and call createBundle first time. bundle is not added in dependency list to avoid render loop.
 We suppress the warning by using // eslint-disable-next-line react-hooks/exhaustive-deps
+
+# Add support for Loading progress spinner
+# Styling of progress bar.
+# Show progress bar only if expected to take a long time.
+
