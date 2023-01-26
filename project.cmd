@@ -264,3 +264,9 @@ We suppress the warning by using // eslint-disable-next-line react-hooks/exhaust
 Access code like functions etc defined in previous cells
 Join the prior cells into the subsequent code cells
 We will create built in function like show or render to display a value in the preview pane.
+# Add support to show detect and show a react component
+# Avoid name collisions
+# Make a change in esbuild setting to create _React.createElement instead of React.createElement.
+            jsxFactory: '_React.createElement',
+            jsxFragment: '_React.Fragment'
+

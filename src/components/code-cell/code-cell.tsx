@@ -22,16 +22,19 @@ const CodeCell: React.FC<CodeCellProps> = ({cell}) => {
 
         const cumCode = [
         `
+        import _React from 'react';
+        import {createRoot as _createRoot} from 'react-dom/client';
         const show = (value) => {
             if (typeof(value) ==='object') {
+                const rootElement = document.querySelector('#root');
+                
                 if (value.$$typeof && value.props) {
-                    const {createRoot} = require('react-dom/client');
-                    createRoot(document.querySelector('#root')).render(value); 
+                    _createRoot(rootElement).render(value); 
                 } else {
-                    document.querySelector('#root').innerHTML = JSON.stringify(value);
+                    rootElement.innerHTML = JSON.stringify(value);
                 }
             } else {
-                document.querySelector('#root').innerHTML = value;
+                rootElement.innerHTML = value;
             }
         }
         `
