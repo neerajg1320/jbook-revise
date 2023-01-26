@@ -47,6 +47,22 @@ root.render(
 );
 `
 
+export const defaultReactTwoComponentCode = `\
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement);
+
+const App = () => <h2>My React App</h2>;
+root.render(
+  <>
+    <h1>Hello</h1>
+    <App />
+  </>
+);
+`
+
 export const defaultErrorCode = `\
 console.base();
 `
