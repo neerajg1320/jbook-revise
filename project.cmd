@@ -301,3 +301,27 @@ Hence the three folders would be local-client, local-api, cli.
 
 lerna init
 mv local-client packages
+
+The goal of cli package to start local-api, but we can also use it for operations like publish etc.
+cd packages
+mkdir cli
+mkdir local-api
+cd cli
+npm init -y
+cd ..
+cd local-api
+npm init -y
+cd ..
+
+With lerna we do not manually npm install modules, we delegate all this stuff to lerna.
+We will use lerna for all this.
+
+# Example
+lerna add <pkg> --scope=module-1
+
+CLI
+lerna add commander --scope=cli
+
+# Linking packages locally: One of the main reasons for using lerna
+lerna add local-api --scope=cli
+
