@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import CodeEditor from "../editor/code-editor";
-import Preview from "../preview/preview";
+import CodeEditor from "../code-editor/code-editor";
+import Preview from "../code-run-preview/preview";
 import bundle from "../../bundler";
 import * as preset from "../../presets/code";
 import Resizable from "./resizable";
