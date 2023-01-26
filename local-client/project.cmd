@@ -273,4 +273,26 @@ We will create built in function like show or render to display a value in the p
 The show function is defined twice, once where it does nothing and then in the last cell we give it a proper definition
 Create a hook for getting the cumulative code.
 
+## Save the list of cells in a file, so that these can be saved and can be shared easily with others.
 
+## Local NODE API
+# We will have something like to serve the built app
+npx jbook serve
+# Save changes via Local Node API
+# Load up the saved file containing the cells
+
+# We could have created a local-api.js and created a new script in package.json call 'serve'
+# Package based development
+We are going to have following main packages
+CLI
+Local Express API
+Public Express API (Not being built, can be built in future)
+React App
+
+# We will use a tool called Lerna CLI, a tool for managing a multi package project.
+Other such tools: Yarn workspaces, NPM Workspaces, Bolt, Luigi
+We are using Lerna version v3.22.1
+npm install -g --save-exact lerna@3.22.1
+
+We will rename the jbook-revise folder to local-client as it contains the react app.
+We want to rename the container folder as jbook-revise.
