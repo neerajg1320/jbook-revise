@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {debug} from "../../global/config";
 import CodeEditor from "../editor/code-editor";
 import Preview from "../preview/preview";
 import bundle from "../../bundler";
@@ -7,13 +6,15 @@ import * as preset from "../../presets/code";
 import Resizable from "./resizable";
 
 const CodeCell = () => {
-    const [input, setInput] = useState(preset.defaultReactNewCode);
+    const [input, setInput] = useState(preset.defaultAsyncErrorCode);
+    const [err, setErr] = useState('');
     const [code, setCode] = useState('');
 
     useEffect(() => {
         const timer = setTimeout(async () => {
             const output = await bundle(input);
-            setCode(output);
+            setCode(output.code);
+            setErr(output.err);
         }, 500);
 
         return () => {
@@ -36,7 +37,7 @@ const CodeCell = () => {
                         }}
                     />
                 </Resizable>
-                <Preview code={code} />
+                <Preview code={code} err={err} />
             </div>
         </Resizable>
     );

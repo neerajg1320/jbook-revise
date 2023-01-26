@@ -50,3 +50,9 @@ root.render(
 export const defaultErrorCode = `\
 console.base();
 `
+
+export const defaultAsyncErrorCode = `\
+setTimeout(() => {
+    console.base();
+});
+`

@@ -200,3 +200,18 @@ We used the custom created syntax.css for the code
 
 ## Add support for Resizable using react-resizable
 npm install --save-exact react-resizable@3.0.4 @types/react-resizable@3.0.2 --legacy-peer-deps
+
+## We have to handle errors in the asynchrnous calls
+Three kinds of errors
+i) Bundling error during bundling time
+ii) Synchronous code error during runtime
+iii) Asynchronous code error during runtime
+
+TBDV: In Safari the event.error is null in the window.addEventListener
+
+The build errors are displayed in the mainWindow in preview-error inside the preview-wrapper.
+The runtime errors are dsiplayed in the iframe.
+
+
+## Create a Markdown editor
+

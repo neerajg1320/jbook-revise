@@ -13,22 +13,35 @@ const bundle = async (rawCode: string) => {
         });
     }
 
-    const result = await service.build({
-        entryPoints: ['index.jsx'],
-        bundle: true,
-        write: false,
-        // TBVE: Check if we can create an inmemory file and pass path to it
-        plugins: [
-            unpkgPathPlugin(),
-            fetchPlugin(rawCode)
-        ],
-        define: {
-            'process.env.NODE_ENV': '"production"',
-            global: 'window'
+    try {
+        const result = await service.build({
+            entryPoints: ['index.jsx'],
+            bundle: true,
+            write: false,
+            // TBVE: Check if we can create an in-memory file and pass path to it
+            plugins: [
+                unpkgPathPlugin(),
+                fetchPlugin(rawCode)
+            ],
+            define: {
+                'process.env.NODE_ENV': '"production"',
+                global: 'window'
+            }
+        });
+        return {
+            code: result.outputFiles[0].text,
+            err: ''
+        };
+    } catch (err) {
+        if (err instanceof Error) {
+            return {
+                code: '',
+                err: err.message
+            };
+        } else {
+            throw err;
         }
-    });
-
-    return result.outputFiles[0].text;
+    }
 }
 
 export default bundle;
