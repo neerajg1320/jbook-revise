@@ -51,7 +51,10 @@ const TextEditor: React.FC<TextEditorProps> = ({cell}) => {
     if (editing) {
         return (
             <div className="text-editor" ref={divRef}>
-                <MDEditor value={cell.content} onChange={(v) => updateCell(cell.id,v || '')}/>
+                <MDEditor
+                    value={cell.content}
+                    onChange={(v) => updateCell(cell.id,v || '')}
+                />
             </div>
         );
     }
@@ -59,7 +62,7 @@ const TextEditor: React.FC<TextEditorProps> = ({cell}) => {
     return (
       <div className="text-editor card" onClick={() => setEditing(true)}>
           <div className="card-content">
-            <MDEditor.Markdown source={cell.content} />
+            <MDEditor.Markdown source={cell.content || 'Click To Edit'} />
           </div>
       </div>
     );
