@@ -213,5 +213,8 @@ The build errors are displayed in the mainWindow in preview-error inside the pre
 The runtime errors are dsiplayed in the iframe.
 
 
-## Create a Markdown editor
+## Create a Markdown editor with preview window
+npm install --save-exact @uiw/react-md-editor@2.1.1 --legacy-peer-deps
+Support ViewMode and EditMode
+Add event listener to body element to detect any click outside the component
 
