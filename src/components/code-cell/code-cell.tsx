@@ -36,18 +36,16 @@ const CodeCell: React.FC<CodeCellProps> = ({cell}) => {
                 rootElement.innerHTML = value;
             }
         }
-        `
+        `;
 
         const showFuncNoop = 'var show = () => {}';
 
-        const cumCode = [];
+        const cumCode = [showFuncNoop];
 
         for (let c of orderedCells) {
             if (c.type === 'code') {
                 if (c.id === cell.id) {
                     cumCode.push(showFunc);
-                } else {
-                    cumCode.push(showFuncNoop);
                 }
                 cumCode.push(c.content);
             }
