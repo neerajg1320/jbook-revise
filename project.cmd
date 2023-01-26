@@ -252,4 +252,6 @@ Discussion around selectors to be used in asynchronous code or not.
 The useMemo fixes it in useActions.js hook. We need to bind this only once.:
 return useMemo(() => bindActionCreators(actionCreators, dispatch), [dispatch]);
 
-
+## Added support for default code in the code cell. Not there in the tutorial
+We make a bundle check and call createBundle first time. bundle is not added in dependency list to avoid render loop.
+We suppress the warning by using // eslint-disable-next-line react-hooks/exhaustive-deps

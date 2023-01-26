@@ -2,8 +2,6 @@ import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import reducers from './reducers';
 import {reduxManualTest} from "../global/config";
-// import {ActionType} from "./action-types";
-
 
 export const store = createStore(
     reducers,
@@ -15,7 +13,7 @@ export const store = createStore(
 export const populateStoreManual = () => {
     // The import syntax doesn't work inside block
     const {ActionType} = require("./action-types");
-    const {defaultCode} = require('../presets/code');
+    const {defaultRootElementCode} = require('../presets/code');
 
     console.log(store.getState());
 
@@ -36,7 +34,7 @@ export const populateStoreManual = () => {
         payload: {
             id: null,
             type: 'code',
-            content: defaultCode
+            content: defaultRootElementCode
         }
     });
 

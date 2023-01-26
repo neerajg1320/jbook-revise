@@ -63,6 +63,9 @@ root.render(
 );
 `
 
+export const defaultRootElementCode = `\
+document.querySelector('#root').innerHTML = "Gekko"
+`
 export const defaultErrorCode = `\
 console.base();
 `
