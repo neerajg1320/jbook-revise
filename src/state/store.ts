@@ -15,6 +15,7 @@ export const store = createStore(
 export const populateStoreManual = () => {
     // The import syntax doesn't work inside block
     const {ActionType} = require("./action-types");
+    const {defaultCode} = require('../presets/code');
 
     console.log(store.getState());
 
@@ -35,6 +36,7 @@ export const populateStoreManual = () => {
         payload: {
             id: null,
             type: 'code',
+            content: defaultCode
         }
     });
 
