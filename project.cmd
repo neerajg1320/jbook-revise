@@ -220,5 +220,9 @@ Add event listener to body element to detect any click outside the component
 
 # We have to fix the misplaced cursor problem. We can check using the # (...text)
 The bulma css conflicts here as it modifies .title. So we have to prevent it.
+Fix the vertical divider height. It is caused due to bulma css conflict.
+Restyle the resize bar
+
+
 
 
