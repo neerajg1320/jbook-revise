@@ -9,7 +9,6 @@ import {
 } from '../actions';
 import { CellTypes, Cell } from '../cell';
 
-
 export const updateCell = (id: string, content: string): UpdateCellAction => {
     return {
         type: ActionType.UPDATE_CELL,
