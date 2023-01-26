@@ -260,3 +260,7 @@ We suppress the warning by using // eslint-disable-next-line react-hooks/exhaust
 # Styling of progress bar.
 # Show progress bar only if expected to take a long time.
 
+## Cumulative Code Execution
+Access code like functions etc defined in previous cells
+Join the prior cells into the subsequent code cells
+We will create built in function like show or render to display a value in the preview pane.

@@ -16,22 +16,55 @@ const CodeCell: React.FC<CodeCellProps> = ({cell}) => {
     const bundle = useTypedSelector((state) => {
         return state.bundles[cell.id];
     });
+    const cumulativeCode = useTypedSelector((state) => {
+        const {data, order} = state.cells;
+        const orderedCells = order.map(id => data[id]);
+
+        const cumCode = [
+        `
+        const show = (value) => {
+            if (typeof(value) ==='object') {
+                if (value.$$typeof && value.props) {
+                    const {createRoot} = require('react-dom/client');
+                    createRoot(document.querySelector('#root')).render(value); 
+                } else {
+                    document.querySelector('#root').innerHTML = JSON.stringify(value);
+                }
+            } else {
+                document.querySelector('#root').innerHTML = value;
+            }
+        }
+        `
+        ];
+        for (let c of orderedCells) {
+            if (c.type === 'code') {
+                cumCode.push(c.content);
+            }
+            if (c.id === cell.id) {
+                break;
+            }
+        }
+
+        return cumCode;
+    })
+
+    // console.log(cumulativeCode);
 
     useEffect(() => {
         if (!bundle) {
-            createBundle(cell.id, cell.content);
+            createBundle(cell.id, cumulativeCode.join('\n'));
             return;
         }
 
         const timer = setTimeout(async () => {
-            createBundle(cell.id, cell.content);
+            createBundle(cell.id, cumulativeCode.join('\n'));
         }, 750);
 
         return () => {
           clearTimeout(timer);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cell.content, cell.id, createBundle]);
+    }, [cumulativeCode.join('\n'), cell.id, createBundle]);
 
 
     return (
