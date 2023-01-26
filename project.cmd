@@ -269,4 +269,7 @@ We will create built in function like show or render to display a value in the p
 # Make a change in esbuild setting to create _React.createElement instead of React.createElement.
             jsxFactory: '_React.createElement',
             jsxFragment: '_React.Fragment'
+# show from previous cells not to be used in the subsequent cells
+The show function is defined twice, once where it does nothing and then in the last cell we give it a proper definition
+
 

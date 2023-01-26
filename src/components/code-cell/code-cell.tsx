@@ -20,11 +20,10 @@ const CodeCell: React.FC<CodeCellProps> = ({cell}) => {
         const {data, order} = state.cells;
         const orderedCells = order.map(id => data[id]);
 
-        const cumCode = [
-        `
+        const showFunc = `\
         import _React from 'react';
         import {createRoot as _createRoot} from 'react-dom/client';
-        const show = (value) => {
+        var show = (value) => {
             if (typeof(value) ==='object') {
                 const rootElement = document.querySelector('#root');
                 
@@ -38,9 +37,18 @@ const CodeCell: React.FC<CodeCellProps> = ({cell}) => {
             }
         }
         `
-        ];
+
+        const showFuncNoop = 'var show = () => {}';
+
+        const cumCode = [];
+
         for (let c of orderedCells) {
             if (c.type === 'code') {
+                if (c.id === cell.id) {
+                    cumCode.push(showFunc);
+                } else {
+                    cumCode.push(showFuncNoop);
+                }
                 cumCode.push(c.content);
             }
             if (c.id === cell.id) {
