@@ -2,6 +2,7 @@ import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import reducers from './reducers';
 import {reduxManualTest} from "../global/config";
+import {ActionType} from "./action-types";
 
 
 
@@ -16,7 +17,10 @@ if (reduxManualTest) {
     // The import syntax doesn't work inside block
     const {ActionType} = require("./action-types");
 
+    console.log(store.getState());
+
     // Manually dispatch actions
+
     store.dispatch({
         type: ActionType.INSERT_CELL_AFTER,
         payload: {
@@ -28,6 +32,29 @@ if (reduxManualTest) {
 
     console.log(store.getState());
 
+    store.dispatch({
+        type: ActionType.INSERT_CELL_AFTER,
+        payload: {
+            id: null,
+            type: 'text',
+
+        }
+    });
+
+    console.log(store.getState());
+
+    // Insert after first cell
+    const firstCellId = store.getState().cells.order[0]
+    store.dispatch({
+        type: ActionType.INSERT_CELL_AFTER,
+        payload: {
+            id: firstCellId,
+            type: 'text',
+
+        }
+    });
+    
+    console.log(store.getState());
 }
 
 
