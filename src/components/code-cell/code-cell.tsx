@@ -43,7 +43,7 @@ const CodeCell: React.FC<CodeCellProps> = ({cell}) => {
                         }}
                     />
                 </Resizable>
-                {bundle && <Preview code={bundle.code} err={bundle.err} />}
+                <Preview code={bundle?.code || ''} err={bundle?.err || ''} />
             </div>
         </Resizable>
     );

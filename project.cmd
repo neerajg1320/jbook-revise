@@ -223,6 +223,33 @@ The bulma css conflicts here as it modifies .title. So we have to prevent it.
 Fix the vertical divider height. It is caused due to bulma css conflict.
 Restyle the resize bar
 
+## Redux with typescript
+npm install --save-exact react-redux redux @types/react-redux redux-thunk@2.3.0 --legacy-peer-deps
 
+# Use immer package for the state management. This reduces the boilerplate that we have to write
+npm install immer
+Test redux store manually
+
+# Binding React with Redux. Show list of cells to user.
+CellList, CellListItem
+We can move cells up and down
+We need to create a TypedSelector. We will use a new mystery hook.
+Action Creator Helper. Less writing but a lot more obscurity.
+We are going to use incremental move from local state in cells to redux based state.
+Add action bar in the cells move-up, move-down, delete
+
+We will use FontAwesome
+npm install @fortawesome/fontawesome-free@5.15.1 --legacy-peer-deps
+
+## Add Cell Component
+This divides the existing components. It is a line containing buttons and is placed between two components.
+
+## Bundles Reducer in the redux side
+Bundle state is derived from Cells state, as bundled code is produced from the Cell content
+Discussion around selectors to be used in asynchronous code or not.
+
+# We have a blinking preview window.
+The useMemo fixes it in useActions.js hook. We need to bind this only once.:
+return useMemo(() => bindActionCreators(actionCreators, dispatch), [dispatch]);
 
 
