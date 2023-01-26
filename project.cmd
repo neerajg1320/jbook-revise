@@ -296,3 +296,8 @@ npm install -g --save-exact lerna@3.22.1
 
 We will rename the jbook-revise folder to local-client as it contains the react app.
 We want to rename the container folder as jbook-revise.
+We are going to create two other folders as cli, local-api
+Hence the three folders would be local-client, local-api, cli.
+
+lerna init
+mv local-client packages
