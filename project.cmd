@@ -649,3 +649,26 @@ Remove the following from local-client
        "scripts" {
         "prepublishOnly": "npm run build",
        }
+
+# We will use the esbuild to create that script
+# There is another goal, that user should install as little as possible to run @glassball/cli
+We should apply esbuild to our cli package. We should also attempt to bundle our cli package
+So it will have all the source code required for the cli
+
+So with esbuild we do two things:
+i) We replace process.env.NODE_ENV with production
+ii) We bundle the cli package so that we do not have to download multiple packages.
+
+lerna add esbuild@0.8.26 --exact --dev --scope=@glassball/cli
+The local-client prepublishOnly command is:
+"prepublishOnly": "esbuild src/index.ts --platform=node --outfile=dist/index.js --bundle --minify --define:process.env.NODE_ENV=\\\"production\\\" "
+
+The couple of warnings are fine
+The packaging is done. This means we do not need "@glassball/local-api", "commander" in the dependencies
+We can move these to devDependencies
+
+But when we do that we have to include the local-client package in the cli only, as it won't be done by local-api any more.
+This is because local-api is not included now.
+Nothing goes into the cli bundle from local-client
+But local-client is needed because local-api code inside cli has to serve the build folder from local-client.
+
