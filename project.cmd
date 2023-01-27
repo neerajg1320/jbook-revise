@@ -349,3 +349,49 @@ Update in package.json
 
 Add typescript to CLI similarly.
 lerna add typescript --dev --scope=cli
+
+## Parallel start scripts
+In root folder of project package.json. Following command will run start in each package
+
+"start": "lerna run start --parallel"
+
+npm run start
+
+## CLI Implementation. We intend the user to run command like
+'jbook serve'
+'jbook serve notebook.js'
+'jbook serve notebook.js -port 3050'
+
+We will use a package named commander
+cd packages/cli
+cd src
+mkdir commands
+touch serve.ts
+
+lerna add @types/node --dev --scope=cli
+
+Terminal 1:
+tsc --watch --preserveWatchOutput
+
+Terminall 2:
+node index.js serve file.js
+node index.js serve file.js --port 4000
+
+# Communication from CLI to API
+The Local API has purpose of serving react app and persistence of cell i.e. save and fetch.
+
+# From local API we are going to expose an API call serve(port, filename, dir)
+We are going to export serve function from Local API
+
+cd local-api
+Export serve function from src/index.ts
+
+cd cli
+vi src/commands/serve.ts
+
+cd packages/cli/dist
+node index.js serve book.js --port=5000
+
+What is the directory argument about.
+
+
