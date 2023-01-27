@@ -2,6 +2,8 @@ import path from "path";
 import {Command} from "commander";
 import {serve} from "local-api";
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const defaultFilename = 'notebook.js';
 
 interface LocalApiError {
@@ -20,7 +22,7 @@ export const serveCommand = new Command()
 
         const dir = path.join(process.cwd(), path.dirname(filename));
         try {
-            await serve(parseInt(options.port), path.basename(filename), dir);
+            await serve(parseInt(options.port), path.basename(filename), dir, !isProduction);
             console.log(`Opened ${filename}. Navigate to http://localhost:${options.port}`);
         } catch (err) {
             if (isLocalApiError(err)) {

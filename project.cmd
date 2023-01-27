@@ -435,3 +435,39 @@ npm run build
 Note: Due to markdown library, the production bundle creation might take a lot of time.
 In our case it didn't!
 The react production assets are built and kept inside build folder.
+
+# Serve files from a directory in the express app:
+We will use the Static Middleware
+We will use the static-middleware to serve from local-client/build folder.
+
+# Just for proof-of-concept
+app.use(express.static('../../local-client/build'));
+# The above is not a good solution. It was an approach used for demo purpose.
+In lerna we can't reference files between different packages.
+We are going to eventually deploy these in npm repository and the path provide to the middleware is not going to work.
+The packages are going to be placed in the node_modules in a user's folder.
+
+lerna add local-client --scope=local-api
+This will create a link in the local-api/node_modules to local-client.
+Now we will serve from the node_modules folder in the local-api which is allowed
+
+We will try and use the following:
+#Won't work: app.use(express.static('../node_modules/local-client/build'));
+We will get the error:
+Cannot GET /
+It is because the local-client is a symbolic link.
+We will take the symbolic link and we will resolve to absolute path.
+const packagePath = require.resolve('local-client/build/index.html');
+It works
+
+Now we have two ways of serving the react-app
+We will choose the way based on the environment.
+
+# Detect Production mode (user's machine) and development mode (our local machine)
+The user has downloaded and installed our application.
+We can use process.env.NODE_ENV. But this can be easily modified by user.
+
+# So we just before we deploy from the package we are going to run a small script
+# The script will replace process.env.NODE_ENV with 'production'
+
+The check works. In the developement the hot reloading doesn't work.
