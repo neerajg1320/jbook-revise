@@ -1,6 +1,6 @@
 {
   "name": "@glassball/cli",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "",
   "bin": "dist/index.js",
   "publishConfig": {
@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@glassball/local-client": "^1.0.0"
+    "@glassball/local-client": "^0.1.1"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",

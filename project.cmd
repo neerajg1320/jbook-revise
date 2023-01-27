@@ -672,3 +672,8 @@ This is because local-api is not included now.
 Nothing goes into the cli bundle from local-client
 But local-client is needed because local-api code inside cli has to serve the build folder from local-client.
 
+We will push these packages now to npm.
+We will update the versions to 0.1.1
+
+lerna publish --no-push
+
