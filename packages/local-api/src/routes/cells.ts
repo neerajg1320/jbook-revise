@@ -15,6 +15,8 @@ interface LocalApiError {
 }
 
 export const createCellsRouter = (filename: string, dir: string) => {
+    // console.log('createCellsRouter:');
+
     const router = express.Router();
     // body parsing middleware
     router.use(express.json());
@@ -22,6 +24,7 @@ export const createCellsRouter = (filename: string, dir: string) => {
     const fullPath = path.join(dir, filename);
 
     router.get('/cells', async (req, res) => {
+        // console.log('GET: cells');
         const isLocalApiError = (err: any): err is LocalApiError => {
             return typeof err.code === "string";
         };

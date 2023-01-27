@@ -5,6 +5,6 @@ export const debugPlugin = false;
 export const debugCache = false;
 export const debugListeners = false;
 
-export const reduxManualTest = true;
+export const reduxManualTest = false;
 
 

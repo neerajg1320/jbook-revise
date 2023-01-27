@@ -480,3 +480,128 @@ touch routes/cells.ts
 Since we need the filename, we will wrap the router get and set in a function and we provide filename to that function
 
 We will use the 'fs/promises' library for filesystem operations.
+
+# Now we switch our focus back to the react application and support the fetch and save from the client side
+We need to take a look at cellsReducer
+
+## Redux logic for the cells save and fetch
+action-types, actions, action-creators,
+We import axios in the action-creators
+
+For saveCells we only dispatch in case of error while saving. This is by choice.
+We disable the manual population of the cells array.
+Now we need to focus on the react part after doing the redux part.
+We will place the fetch logic in the cells-list.tsx
+
+# Error from the server
+http://localhost:3000/cells not found
+Problem: The cells api calls are reaching the proxy middleware and hence reaching the react application server as well.
+
+We just need to change the order of router and proxy in the local-api app
+# Note: Make sure that we use the http://localhost:4005 as shown in the result of node index.js serve command
+Opened notebook.js. Navigate to http://localhost:4005
+otherwise we will not get the result for api calls.
+This could be avoided if we provide the API server address to the react app by hardcoding or by other means.
+
+## Saving of cells via the API
+We will save the cells whenever there is a change
+The save part is tricky as we have to optimize the operations
+
+redux middleware:
+Persist Middleware in redux to make the API calls
+If our middleware sees any of the Move, Update, Insert, Delete then middleware makes the API calls
+cd local-client/src/state
+mkdir middleware
+touch persistMiddleware.ts
+
+A redux middleware is a function that returns a function that returns a function.
+Example redux middleware:
+export const persistMiddleware = () => {
+    return () => {
+        return () => {
+
+        }
+    }
+}
+
+# Below is a non-intrusive working middleware. We have to make next(action) call.
+
+export const persistMiddleware = ({dispatch}: {dispatch: Dispatch<Action>} ) => {
+    return (next: (action:Action) => void) => {
+        return (action: Action) => {
+            next(action);
+        }
+    }
+}
+
+# The full implementation
+export const persistMiddleware = (
+    {dispatch, getState}: {dispatch: Dispatch<Action>, getState: () => RootState}
+) => {
+    return (next: (action:Action) => void) => {
+        return (action: Action) => {
+            next(action);
+
+            if ([ActionType.MOVE_CELL,
+                ActionType.UPDATE_CELL,
+                ActionType.DELETE_CELL,
+                ActionType.INSERT_CELL_AFTER
+            ].includes(action.type)) {
+                console.log(`We need to save cells.`);
+                // The saveCells() returns a function which needs to be called with dispatch and getState
+                saveCells()(dispatch, getState);
+            }
+        }
+    }
+}
+
+# We will add a debounce so that we don't call API with every keypress
+
+## Publishing to NPM
+The packages cli, local-api, local-client have to be published to npm repo
+The cli depends on local-api
+The local-api depends on local-client
+We want the user to install these using:
+npm install -g jbook
+
+# tiny-npm-deploy
+Understand the process of deployment.
+We will refer the already create project 'tiny-ball-deploy'
+
+i) We need a unique package name
+ii) publish the files in the "files": []
+iii) Split dependencies and devDependencies. During publish only dependencies are needed.
+Hence on somebody else's machine only dependencies are installed.
+iv) Set package to be publically accessible. Add "publishConfig": {"access": "public"}
+v) If building a CLI, which file to run. "bin" attribute "dist/index.js"
+index.ts:
+#!/usr/bin/env node
+vi) Add a 'prePublish' script. To execute before publish.
+"prepublishOnly": "npm run build"
+vii) Commit to git. Use .gitignore as well.
+viii) Run 'npm publish'
+We got the email confirmation on neerajgupta.mbox@gmail.com
+
+# We successfully uploaded two versions of tiny-ball-deploy 1.0.1 and 1.0.2
+We can test using:
+http://localhost:3005/
+http://localhost:3005/demo (version 1.0.2 and above)
+
+Scoped Packages: We will use the following package names
+@glassball/cli
+@glassball/local-api
+@glassball/local-client
+
+We will use the account neerajgupta.mbox@gmail.com on npm registry
+We have four packages and one organization name.
+We have the organization name glassball.
+
+We will change the package names in the package.json of each of our packages
+We need to refactor package name usages as we have renamed them
+@glassball/cli:
+package.json, serve.ts
+@glassball/local-api
+package.json, index.ts
+
+We need to then run:
+lerna bootstrap
