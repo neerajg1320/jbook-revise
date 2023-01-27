@@ -605,3 +605,47 @@ package.json, index.ts
 
 We need to then run:
 lerna bootstrap
+
+i) Make sure package is unique
+ii) Specify which files should be uploaded
+iii) Split dependencies and devDependencies
+iv) Set package to be fully accessible
+v) If building a CLI, configure the file to run
+vi) Add a 'prePublish' script
+vii) Commit to git
+viii) Run 'npm publish'
+
+For cli, local-api
+  "files": [
+    "dist"
+  ],
+For local-client
+  "files": [
+    "build"
+  ],
+
+Note: For local-client we do not need any dependencies at all
+The local-api uses the build folder in which everything is prebuilt
+
+What is the purpose of "bin" attribute?
+Put the following in all three:
+  "publishConfig": {
+    "access": "public"
+  },
+
+Remove the following from local-client
+  "private": true,
+
+# Now we need to add build scripts
+
+# Add following
+    #!/usr/bin/env node
+
+# For cli and local-api
+   "scripts" {
+    "prepublishOnly": "tsc",
+   }
+# For local-client
+       "scripts" {
+        "prepublishOnly": "npm run build",
+       }
