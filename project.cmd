@@ -394,4 +394,44 @@ node index.js serve book.js --port=5000
 
 What is the directory argument about.
 
+## Implement the local-api
+Goals of local api:
+i) Serve react app
+ii) Store cells in a file
+iii) Retrieve cells from a file
 
+Add dependencies and run express
+
+With lerna we can add only one package at a time. (is it true still now?)
+lerna add express --scope=local-api
+lerna add @types/express --dev --scope=local-api
+lerna add cors --scope=local-api
+lerna add @types/cors --dev --scope=local-api
+lerna add http-proxy-middleware --scope=local-api
+
+# Create express app and run it via
+jbook-revise/ $ cd packages/cli/dist
+dist/ $ node index.js serve
+Listening on port 4005
+
+# Error handling for port in use
+Wrap express listen with a promise in command serve
+Also we have to resolve the problem as the error is thrown from asynchronous thread.
+The command execution thread is long gone.
+We will wrap the express call into a Promise.
+
+## Load the built react files from the express app
+In development mode: we are going to proxy to the React server in case the request is not for save/fetch cells.
+We have installed http-proxy-middleware for the same.
+
+# We are accessing the react app through the express app !!
+
+# Second scenario:
+Serve the react app from the build directory
+
+Terminal 3:
+cd packages/local-client
+npm run build
+Note: Due to markdown library, the production bundle creation might take a lot of time.
+In our case it didn't!
+The react production assets are built and kept inside build folder.
