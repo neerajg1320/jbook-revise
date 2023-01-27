@@ -471,3 +471,12 @@ We can use process.env.NODE_ENV. But this can be easily modified by user.
 # The script will replace process.env.NODE_ENV with 'production'
 
 The check works. In the developement the hot reloading doesn't work.
+
+# Create the cells router
+We want to intercept the requests for cells save and fetch.
+cd local-api/src
+mkdir routes
+touch routes/cells.ts
+Since we need the filename, we will wrap the router get and set in a function and we provide filename to that function
+
+We will use the 'fs/promises' library for filesystem operations.
